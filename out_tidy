@@ -1,0 +1,336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta name="generator" content=
+    "HTML Tidy for Linux (vers 25 March 2009), see www.w3.org">
+    <meta content="text/html; charset=us-ascii" http-equiv=
+    "Content-Type">
+    <title>
+      renfe.mobi
+    </title>
+    <meta content="es-es" http-equiv="Content-Language">
+    <meta content="," name="description">
+    <meta content="" name="keywords">
+    <meta content="index, follow" name="robots">
+    <meta content="1 day" name="revisit-after">
+    <meta content="0" http-equiv="expires">
+    <link href="/renfev2/styles/styles_gb.css" rel="stylesheet"
+    type="text/css">
+    <meta content="width=320" name="viewport">
+  </head>
+  <body>
+    <div id="header">
+      <a href=
+      "http://renfe.mobi:80/renfev2/inicio.do;jsessionid=3C261D34789BD4DB0E2DB5F479C40C53?ss=3C261D34789BD4DB0E2DB5F479C40C53">
+      <img alt="renfe" src=
+      "http://renfe.mobi:80/renfev2/images/logo_renfe_800x600.gif"
+      class="logo"></a><a href=
+      "http://renfe.mobi:80/renfev2/ciudades_cercanias.do;jsessionid=3C261D34789BD4DB0E2DB5F479C40C53?ss=3C261D34789BD4DB0E2DB5F479C40C53"
+      class="volver">Volver</a>
+    </div>
+    <div id="banner">
+      <a href=
+      "http://renfe.mobi:80/renfev2/promociones_listado.do;jsessionid=3C261D34789BD4DB0E2DB5F479C40C53?ss=3C261D34789BD4DB0E2DB5F479C40C53&amp;ciudad=asturias">
+      <img alt="banner" src=
+      "/renfev2/ImageApplication?name=http://www.renfe.com/img/mobi/es/franciaporlaviarapida_a.png&amp;format=JPG&amp;screen_width=800"></a>
+    </div>
+    <h1>
+      Cercan&iacute;as
+    </h1>
+    <div id="container">
+      <div id="details">
+        <h2 class="cerc">
+          Horarios de asturias
+        </h2>
+        <div id="nav">
+          <div class="opt">
+            <span>Horarios</span>
+          </div>
+          <div class="opt">
+            <a href=
+            "http://renfe.mobi:80/renfev2/mapa_cercanias.do;jsessionid=3C261D34789BD4DB0E2DB5F479C40C53?ss=3C261D34789BD4DB0E2DB5F479C40C53&amp;ciudad=asturias&amp;nucleo=20">
+            Plano</a>
+          </div>
+        </div>
+        <form action=
+        "http://renfe.mobi:80/renfev2/resultado_cercanias.do;jsessionid=3C261D34789BD4DB0E2DB5F479C40C53?ga=true&amp;nucleo=20&amp;ciudad=asturias&amp;ss=3C261D34789BD4DB0E2DB5F479C40C53"
+        method="post" name="">
+          <input name="horario" type="hidden">Origen :
+          <select name="o" class="estCaja">
+            <option value="15205">
+              Abla&ntilde;a
+            </option>
+            <option value="16403">
+              Aviles
+            </option>
+            <option value="16006">
+              Barros
+            </option>
+            <option value="15401">
+              Calzada Asturias
+            </option>
+            <option value="15120">
+              Campomanes
+            </option>
+            <option value="16302">
+              Cancienes
+            </option>
+            <option value="16010">
+              Cia&ntilde;o
+            </option>
+            <option value="15210">
+              El Caleyo
+            </option>
+            <option value="16011">
+              El Entrego
+            </option>
+            <option value="16301">
+              Ferro&ntilde;es
+            </option>
+            <option value="15410">
+              Gijon (Sanz Crespo)
+            </option>
+            <option value="15121">
+              La Cobertoria
+            </option>
+            <option value="15217">
+              La Corredoria
+            </option>
+            <option value="16008">
+              La Felguera
+            </option>
+            <option value="15119">
+              La Frecha
+            </option>
+            <option value="15206">
+              La Pereda-Riosa
+            </option>
+            <option value="16402">
+              La Rocica
+            </option>
+            <option value="15209">
+              Las Segadas
+            </option>
+            <option value="15218">
+              Llamaquique
+            </option>
+            <option value="16406">
+              Los Campos
+            </option>
+            <option value="15300">
+              Lugo de LLanera
+            </option>
+            <option value="15212">
+              Lugones
+            </option>
+            <option value="15203">
+              Mieres-Puente
+            </option>
+            <option value="15303">
+              Monteana
+            </option>
+            <option value="16400">
+              Nubledo
+            </option>
+            <option value="15207">
+              Olloniego
+            </option>
+            <option value="15211">
+              Oviedo
+            </option>
+            <option value="16005">
+              Pe&ntilde;a Rubia
+            </option>
+            <option value="15122">
+              Pola de Lena
+            </option>
+            <option value="15118">
+              Puente L.Fierros
+            </option>
+            <option value="16009">
+              Sama
+            </option>
+            <option value="16405">
+              San Juan de Nieva
+            </option>
+            <option value="16001">
+              Santa Eulalia M.
+            </option>
+            <option value="15202">
+              Santullano
+            </option>
+            <option value="15302">
+              Serin
+            </option>
+            <option value="15208">
+              Soto de Rey
+            </option>
+            <option value="16002">
+              Tudela-Veguin
+            </option>
+            <option value="15200">
+              Ujo
+            </option>
+            <option value="15400">
+              Veri&ntilde;a
+            </option>
+            <option value="15301">
+              Villabona Astur
+            </option>
+            <option value="15305">
+              Villabona-Tabladiell
+            </option>
+            <option value="16401">
+              Villalegre
+            </option>
+            <option value="15123">
+              Villallana
+            </option>
+          </select>Destino : <select name="d" class="estCaja">
+            <option value="15205">
+              Abla&ntilde;a
+            </option>
+            <option value="16403">
+              Aviles
+            </option>
+            <option value="16006">
+              Barros
+            </option>
+            <option value="15401">
+              Calzada Asturias
+            </option>
+            <option value="15120">
+              Campomanes
+            </option>
+            <option value="16302">
+              Cancienes
+            </option>
+            <option value="16010">
+              Cia&ntilde;o
+            </option>
+            <option value="15210">
+              El Caleyo
+            </option>
+            <option value="16011">
+              El Entrego
+            </option>
+            <option value="16301">
+              Ferro&ntilde;es
+            </option>
+            <option value="15410">
+              Gijon (Sanz Crespo)
+            </option>
+            <option value="15121">
+              La Cobertoria
+            </option>
+            <option value="15217">
+              La Corredoria
+            </option>
+            <option value="16008">
+              La Felguera
+            </option>
+            <option value="15119">
+              La Frecha
+            </option>
+            <option value="15206">
+              La Pereda-Riosa
+            </option>
+            <option value="16402">
+              La Rocica
+            </option>
+            <option value="15209">
+              Las Segadas
+            </option>
+            <option value="15218">
+              Llamaquique
+            </option>
+            <option value="16406">
+              Los Campos
+            </option>
+            <option value="15300">
+              Lugo de LLanera
+            </option>
+            <option value="15212">
+              Lugones
+            </option>
+            <option value="15203">
+              Mieres-Puente
+            </option>
+            <option value="15303">
+              Monteana
+            </option>
+            <option value="16400">
+              Nubledo
+            </option>
+            <option value="15207">
+              Olloniego
+            </option>
+            <option value="15211">
+              Oviedo
+            </option>
+            <option value="16005">
+              Pe&ntilde;a Rubia
+            </option>
+            <option value="15122">
+              Pola de Lena
+            </option>
+            <option value="15118">
+              Puente L.Fierros
+            </option>
+            <option value="16009">
+              Sama
+            </option>
+            <option value="16405">
+              San Juan de Nieva
+            </option>
+            <option value="16001">
+              Santa Eulalia M.
+            </option>
+            <option value="15202">
+              Santullano
+            </option>
+            <option value="15302">
+              Serin
+            </option>
+            <option value="15208">
+              Soto de Rey
+            </option>
+            <option value="16002">
+              Tudela-Veguin
+            </option>
+            <option value="15200">
+              Ujo
+            </option>
+            <option value="15400">
+              Veri&ntilde;a
+            </option>
+            <option value="15301">
+              Villabona Astur
+            </option>
+            <option value="15305">
+              Villabona-Tabladiell
+            </option>
+            <option value="16401">
+              Villalegre
+            </option>
+            <option value="15123">
+              Villallana
+            </option>
+          </select> A partir de :<select name="ho" class=
+          "caja_texto">
+            <option selected value="00">
+              - Todas -
+            </option>
+          </select> &nbsp;<input class="button" name="horario"
+          type="submit" value=" Ver horario">
+        </form>
+      </div>
+      <div class="clr"></div>
+    </div>
+    <div id="submenu"></div>
+    <div style="display:none">
+      <img src=
+      "http://renfe.mobi/renfev2/jsp/ga.jsp?utmac=MO-21445869-2&amp;utmn=853297399&amp;utmr=-&amp;utmp=%2Frenfev2%2Fjsp%2Fcercanias%2Fhora_ga_cercanias.jsp%3Fciudad%3Dasturias%26nucleo%3D20&amp;guid=ON">
+    </div>
+  </body>
+</html>
