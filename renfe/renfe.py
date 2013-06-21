@@ -1,4 +1,4 @@
-import urllib, urllib2, sqlite3
+import urllib, sqlite3
 from bs4 import BeautifulSoup
 
 class Renfe(object):
@@ -33,25 +33,54 @@ class Renfe(object):
       'ho': 00, # hora de origen
       'hd': 26, # hora de destino
       'TXTInfo': ''})
-    p = urllib2.urlopen(url, params)
+    p = urllib.urlopen(url, params)
     return p.read()
+
+  def parse_normal(self, table):
+    list = []
+    trs = self.get_trs(table)
+    for tr in trs:
+      td = self.get_tds(tr)
+      obj = {}
+      obj['linea'] = td[0].string
+      obj['ho'] = td[1].string
+      obj['hd'] = td[2].string
+      obj['tiempo'] = td[3].string
+      list.append(obj)
+    return list
+
+  def parse_transbordo(self, table):
+    list = []
+    trs = self.get_trs(table)
+    tds = self.get_tds(trs)
+    print tds
+    return list
+
+  def get_trs(self, table):
+    trs = table.tr.td.find_all('tr') # devuelve un tr con muchos trs dentro
+    del trs[0] # borrar primer td (donde esta la info)
+    return trs
+
+  def get_tds(self, tr):
+    tds = tr.find_all('td')
+    return tds
+
+  def hay_transbordo(self, table):
+    trs = self.get_trs(table)
+    print trs
+    tds = self.get_tds(trs[0])
+    return len(tds) > 5
 
   def parse_page(self, html):
     html = BeautifulSoup(html)
     table = BeautifulSoup(str(html.table))
     list = []
-    trs = table.find_all('tr')
-    if len(trs[1].find_all('td')) <= 5: # significa que no hay transbordo
-      for tr in table.find_all('tr'):
-        td = tr.find_all('td')
-        obj = {}
-        obj['linea'] = td[0].string
-        obj['ho'] = td[1].string
-        obj['hd'] = td[2].string
-        obj['tiempo'] = td[3].string
-        list.append(obj)
-    else: # si hay transbordo
-      pass
+    if self.hay_transbordo(table):
+      print 'Hay transbordo'
+      list = self.parse_transbordo(table)
+    else:
+      print 'No hay transbordo'
+      list = self.parse_normal(table)
     return list
 
   def get_horarios(self, orig, dest):
@@ -79,9 +108,12 @@ if __name__ == '__main__':
   n = 96 # sanfe
   origen = estaciones[n][0]
   # n = int(input('Select Destino: '))
-  n = 97 # sant joan
+  # n = 97 # sant joan
   n = 0 # aeroport
   destino = estaciones[n][0]
   horarios = r.get_horarios(origen, destino)
-  for horario in horarios:
-    print horario
+  if horarios:
+    for horario in horarios:
+      print horario
+  else:
+    print 'No he conseguido los horarios'
