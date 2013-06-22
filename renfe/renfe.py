@@ -1,4 +1,6 @@
-import urllib, sqlite3
+import urllib
+import sqlite3
+import time
 from bs4 import BeautifulSoup
 
 class Renfe(object):
@@ -20,7 +22,7 @@ class Renfe(object):
     cursor.execute('SELECT c.nucleo FROM ciudades c, estaciones e WHERE c.nucleo=e.nucleo AND e.id=%s' % estacion)
     return cursor.fetchone()[0]
 
-  def get_page(self, nucleo, orig, dest):
+  def get_page(self, nucleo, orig, dest, date=time.strftime("%Y%m%d"), ho=00, hd=26):
     url = 'http://horarios.renfe.com/cer/hjcer310.jsp'
     params = urllib.urlencode({
       'f1': '',
@@ -29,23 +31,21 @@ class Renfe(object):
       'nucleo': nucleo, # nucleo
       'o': orig, # estacion origen
       'd': dest, # estacion destino
-      'df': 20130621, # dia en formato yyyymmdd
-      'ho': 00, # hora de origen
-      'hd': 26, # hora de destino
+      'df': date, # dia en formato yyyymmdd
+      'ho': ho, # hora de origen
+      'hd': hd, # hora de destino
       'TXTInfo': ''})
     p = urllib.urlopen(url, params)
     return p.read()
 
-  def parse_normal(self, table):
+  def parse_page(self, table):
     list = []
     trs = self.get_trs(table)
     for tr in trs:
-      td = self.get_tds(tr)
-      obj = {}
-      obj['linea'] = td[0].string
-      obj['ho'] = td[1].string
-      obj['hd'] = td[2].string
-      obj['tiempo'] = td[3].string
+      tds = self.get_tds(tr)
+      obj = []
+      for td in tds:
+        obj.append(td.string)
       list.append(obj)
     return list
 
@@ -58,37 +58,33 @@ class Renfe(object):
 
   def get_trs(self, table):
     trs = table.tr.td.find_all('tr') # devuelve un tr con muchos trs dentro
-    del trs[0] # borrar primer td (donde esta la info)
+    # del trs[0] # borrar primer td (donde esta la info)
     return trs
 
   def get_tds(self, tr):
     tds = tr.find_all('td')
     return tds
 
-  def hay_transbordo(self, table):
-    trs = self.get_trs(table)
-    print trs
-    tds = self.get_tds(trs[0])
-    return len(tds) > 5
-
   def parse_page(self, html):
+    # print html
     html = BeautifulSoup(html)
     table = BeautifulSoup(str(html.table))
     list = []
-    if self.hay_transbordo(table):
-      print 'Hay transbordo'
-      list = self.parse_transbordo(table)
-    else:
-      print 'No hay transbordo'
-      list = self.parse_normal(table)
+    list = self.parse_page(table)
     return list
 
   def get_horarios(self, orig, dest):
-    nucleoO = self.get_nucleo(orig)
-    nucleoD = self.get_nucleo(dest)
-    if nucleoO == nucleoD:
-      page = self.get_page(nucleoO, orig, dest)
+    nucleo = self.get_nucleo(orig)
+    oelcun = self.get_nucleo(dest)
+    if nucleo == oelcun:
+      page = self.get_page(nucleo, orig, dest)
       return self.parse_page(page)
+
+
+
+##################################################
+# TEST
+##################################################
 
 if __name__ == '__main__':
   r = Renfe()
@@ -115,5 +111,6 @@ if __name__ == '__main__':
   if horarios:
     for horario in horarios:
       print horario
+      pass
   else:
     print 'No he conseguido los horarios'
