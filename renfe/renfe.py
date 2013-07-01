@@ -1,8 +1,11 @@
+import json
+import os
 import sqlite3
 import time
 import urllib
-import json
 from bs4 import BeautifulSoup
+
+DATABASE = os.path.dirname(os.path.abspath(__file__)) + '/database.db'
 
 class Ciudad:
   def __init__(self, nucleo, nombre):
@@ -17,7 +20,7 @@ class Ciudad:
 
   @staticmethod
   def get_ciudades():
-    connection = sqlite3.connect('database.db')
+    connection = sqlite3.connect(DATABASE)
     cursor = connection.cursor()
     cursor.execute('SELECT nucleo, nombre FROM ciudades ORDER BY nombre ASC;')
     list = []
@@ -41,7 +44,7 @@ class Estacion:
 
   @staticmethod
   def get_estaciones(nucleo):
-    connection = sqlite3.connect('database.db')
+    connection = sqlite3.connect(DATABASE)
     cursor = connection.cursor()
     cursor.execute('SELECT id, nombre FROM estaciones WHERE nucleo=%s ORDER BY nombre ASC' % str(nucleo))
     list = []
@@ -176,6 +179,12 @@ class Horario:
 ##################################################
 # TEST
 ##################################################
+
+import os
+def get_path():
+  l = os.path.abspath(__file__).split('/')
+  l.pop(-1)
+  return '/'.join(l)
 
 if __name__ == '__main__':
   l = Estacion.get_estaciones(50)
