@@ -173,22 +173,3 @@ class Horario:
         'destino': self.destino.to_dict(),
         'horarios': [l.to_dict() for l in self.table]
         }
-
-
-
-##################################################
-# TEST
-##################################################
-
-import os
-def get_path():
-  l = os.path.abspath(__file__).split('/')
-  l.pop(-1)
-  return '/'.join(l)
-
-if __name__ == '__main__':
-  l = Estacion.get_estaciones(50)
-  o = l[96]
-  d = l[97]
-  h = Horario(o, d).to_dict()
-  print h
