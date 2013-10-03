@@ -43,6 +43,17 @@ class Estacion:
         }
 
   @staticmethod
+  def get_estacion_by_nombre(nombre):
+    connection = sqlite3.connect(DATABASE)
+    cursor = connection.cursor()
+    cursor.execute('SELECT id, nucleo, nombre FROM estaciones WHERE nombre="%s" COLLATE NOCASE' % str(nombre))
+    e = cursor.fetchone()
+    estacion = Estacion(e[0], e[2], e[1])
+    connection.commit()
+    connection.close()
+    return estacion
+
+  @staticmethod
   def get_estaciones(nucleo):
     connection = sqlite3.connect(DATABASE)
     cursor = connection.cursor()
@@ -62,18 +73,21 @@ class Transbordo:
 
   def to_dict(self):
     return {
-        'estacion': estacion.to_dict(),
+        'estacion': self.estacion.to_dict(),
         'hl': self.hl,
         'hs': self.hs
         }
 
 class Trayecto:
-  def __init__(self, linea, ho, hd, tiempo, transbordo=None):
+  def __init__(self, linea, ho, hd, tiempo, transbordos=[]):
     self.linea = linea
     self.ho = ho
     self.hd = hd
     self.tiempo = tiempo
-    self.transbordo = transbordo
+    self.transbordos = transbordos
+
+  def anadir_transbordo(self, transbordo):
+    self.transbordos.append(transbordo)
 
   def to_dict(self):
     return {
@@ -81,7 +95,7 @@ class Trayecto:
         'ho': self.ho,
         'hd': self.hd,
         'tiempo': self.tiempo,
-        'transbordo': self.transbordo.to_dict if self.transbordo else None
+        'transbordos': [t.to_dict() for t in self.transbordos ]
         }
 
 class Horario:
@@ -143,11 +157,29 @@ class Horario:
     return l
 
   def parse_table_transbordo(self, list):
-    pass
+    parada_transbordo = Estacion.get_estacion_by_nombre(list[1][0])
     # Borramos las entradasa que no interesan
-    # list.pop(0)
-    # list.pop(0)
-    # list.pop(0)
+    list.pop(0)
+    list.pop(0)
+    list.pop(0)
+    lista = []
+    # para cada fila, miramos si es un transbordo, sino, ponemos el trayecto
+    for row in list:
+      # si es transbordo
+      if row[0] == u'' and row[1] == u'' and row[2] == u'':
+        print('in')
+        transbordo = Transbordo(parada_transbordo, row[3], row[5])
+        lista[-1].anadir_transbordo(transbordo)
+      else:
+        transbordo = Transbordo(parada_transbordo, row[2], row[3])
+        trayecto = Trayecto(str(row[0]), str(row[1]), str(row[5]), str(row[6])) # TODO quitar el tiempo de los trayectos (depende de transbordo, also)
+        trayecto.anadir_transbordo(transbordo)
+        lista.append(trayecto)
+      print(row)
+      print([x.to_dict() for x in lista])
+      print('')
+      print('')
+    return lista
   
   def parse_page(self, html):
     html = BeautifulSoup(html)
