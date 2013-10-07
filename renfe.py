@@ -5,203 +5,163 @@ import time
 import urllib
 from bs4 import BeautifulSoup
 
-DATABASE = os.path.dirname(os.path.abspath(__file__)) + '/database.db'
+DATABASE = os.path.dirname(os.path.abspath(__file__)) + '/database'
 
-class Ciudad:
-  def __init__(self, nucleo, nombre):
-    self.nucleo = nucleo
-    self.nombre = nombre
+class Nucleo:
+	def __init__(self, nucleo_id, nombre):
+		self.nucleo_id = nucleo_id
+		self.nombre = nombre
 
-  def to_dict(self):
-    return {
-        'nucleo': self.nucleo,
-        'nombre': self.nombre
-        }
+	def to_dict(self):
+		return {
+				'id': self.nucleo_id,
+				'nombre': self.nombre
+				}
 
-  @staticmethod
-  def get_ciudades():
-    connection = sqlite3.connect(DATABASE)
-    cursor = connection.cursor()
-    cursor.execute('SELECT nucleo, nombre FROM ciudades ORDER BY nombre ASC;')
-    list = []
-    for ciudad in cursor.fetchall():
-      list.append(Ciudad(ciudad[0], str(ciudad[1])))
-    connection.commit()
-    connection.close()
-    return list
+	@staticmethod
+	def get_by_id(nucleo_id):
+		connection = sqlite3.connect(DATABASE)
+		cursor = connection.cursor()
+		cursor.execute("""
+			SELECT nombre
+			FROM nucleos
+			WHERE id=%s;
+			""" % str(self.nucleo_id))
+		nombre = cursor.fetchone()
+		connection.close()
+		return Nucleo(nucleo_id, nombre)
+
+	@staticmethod
+	def get_nucleos():
+		connection = sqlite3.connect(DATABASE)
+		cursor = connection.cursor()
+		cursor.execute("""
+			SELECT id, nombre
+			FROM nucleos
+			ORDER BY nombre ASC;
+			""")
+		l = [Nucleo(nucleo[0], str(nucleo[1])) for nucleo in cursor.fetchall()]
+		connection.close()
+		return l
 
 class Estacion:
-  def __init__(self, id, nombre, nucleo):
-    self.nombre = nombre
-    self.id = id
-    self.nucleo = nucleo
+	def __init__(self, estacion_id, nombre):
+		self.nombre = nombre
+		self.estacion_id = estacion_id
 
-  def to_dict(self):
-    return {
-        'id': self.id,
-        'nombre': self.nombre
-        }
+	def get_nucleo(self):
+		connection = sqlite3.connect(DATABASE)
+		cursor = connection.cursor()
+		cursor.execute("""
+			SELECT n.nombre, n.id
+			FROM nucleos n, estaciones e
+			WHERE e.id=%s AND e.nucleo_id=n.id;
+			""" % str(self.estacion_id))
+		nombre, nucleo_id = cursor.fetchone()
+		connection.close()
+		return Nucleo(nucleo_id, nombre)
 
-  @staticmethod
-  def get_estacion_by_nombre(nombre):
-    connection = sqlite3.connect(DATABASE)
-    cursor = connection.cursor()
-    cursor.execute('SELECT id, nucleo, nombre FROM estaciones WHERE nombre="%s" COLLATE NOCASE' % str(nombre))
-    e = cursor.fetchone()
-    estacion = Estacion(e[0], e[2], e[1])
-    connection.commit()
-    connection.close()
-    return estacion
+	def to_dict(self):
+		return {
+				'id': self.estacion_id,
+				'nombre': self.nombre
+				}
 
-  @staticmethod
-  def get_estaciones(nucleo):
-    connection = sqlite3.connect(DATABASE)
-    cursor = connection.cursor()
-    cursor.execute('SELECT id, nombre FROM estaciones WHERE nucleo=%s ORDER BY nombre ASC' % str(nucleo))
-    list = []
-    for estacion in cursor.fetchall():
-      list.append(Estacion(estacion[0], estacion[1], nucleo))
-    connection.commit()
-    connection.close()
-    return list
-    
-class Transbordo:
-  def __init__(self, estacion, hl, hs):
-    self.estacion = estacion
-    self.hl = hl
-    self.hs = hs
+	@staticmethod
+	def get_by_id(id):
+		connection = sqlite3.connect(DATABASE)
+		cursor = connection.cursor()
+		cursor.exe_cute("""
+			SELECT nombre
+			FROM estaciones
+			WHERE id=%s;
+			""" % str(nucleo))
+		nombre = cursor.fetchone()
+		connection.close()
+		return Estacion(id, nombre)
 
-  def to_dict(self):
-    return {
-        'estacion': self.estacion.to_dict(),
-        'hl': self.hl,
-        'hs': self.hs
-        }
+	@staticmethod
+	def get_estaciones(nucleo):
+		connection = sqlite3.connect(DATABASE)
+		cursor = connection.cursor()
+		cursor.execute("""
+			SELECT id, nombre
+			FROM estaciones
+			WHERE nucleo_id=%s
+			ORDER BY nombre ASC;
+			""" % str(nucleo.nucleo_id))
+		l = [Estacion(estacion[0], estacion[1]) for estacion in cursor.fetchall()]
+		connection.close()
+		return l
 
-class Trayecto:
-  def __init__(self, linea, ho, hd, tiempo, transbordos=[]):
-    self.linea = linea
-    self.ho = ho
-    self.hd = hd
-    self.tiempo = tiempo
-    self.transbordos = transbordos
+class Horario(object):
+	def __init__(self, origen, destino, ho=00, hd=26):
+		self.origen = origen
+		self.destino = destino
+		self.ho = ho
+		self.hd = hd
+		self.date = 20131006
 
-  def anadir_transbordo(self, transbordo):
-    self.transbordos.append(transbordo)
+		page = self.__get_page()
+		soup = BeautifulSoup(page)
+		table = self.__get_table(soup)
+		if self.__es_transbordo(table): self.__parse_transbordo(table)
+		else: self.__parse_no_transbordo(table)
 
-  def to_dict(self):
-    return {
-        'linea': self.linea,
-        'ho': self.ho,
-        'hd': self.hd,
-        'tiempo': self.tiempo,
-        'transbordos': [t.to_dict() for t in self.transbordos ]
-        }
+	def __get_page(self):
+		"""
+		Obtiene la pagina en la que esta la tabla de horarios en funcion de 
+		los datos puestos en la constructora.
+		"""
+		url = 'http://horarios.renfe.com/cer/hjcer310.jsp'
+		params = urllib.urlencode({
+			'f1': '',
+			'i': 's',
+			'cp': 'NO',
+			'nucleo': self.origen.get_nucleo().nucleo_id,		# nucleo
+			'o': self.origen.estacion_id,		# estacion origen
+			'd': self.destino.estacion_id,	# estacion destino
+			'df': self.date, # dia en formato yyyymmdd
+			'ho': self.ho, # hora de origen
+			'hd': self.hd, # hora de destino
+			'TXTInfo': ''})
+		p = urllib.urlopen(url, params)
+		return p.read()
 
-class Horario:
-  def __init__(self, origen, destino, ho=00, hd=26, date=time.strftime("%Y%m%d")):
-    self.origen = origen
-    self.destino = destino
-    self.ho = ho
-    self.hd = hd
-    self.date = date
-    self.table = self.get_horario()
+	def __get_table(self, soup_page):
+		"""
+		Obtiene la tabla de horarios
 
-  def get_page(self):
-    url = 'http://horarios.renfe.com/cer/hjcer310.jsp'
-    params = urllib.urlencode({
-      'f1': '',
-      'i': 's',
-      'cp': 'NO',
-      'nucleo': self.origen.nucleo, # nucleo
-      'o': self.origen.id, # estacion origen
-      'd': self.destino.id, # estacion destino
-      'df': self.date, # dia en formato yyyymmdd
-      'ho': self.ho, # hora de origen
-      'hd': self.hd, # hora de destino
-      'TXTInfo': ''})
-    p = urllib.urlopen(url, params)
-    return p.read()
+		soup_page: La pagina como clase BeautifulSoup
+		"""
+		return soup_page.find_all('table')[0]
+		
+	def __es_transbordo(self, soup_table):
+		"""
+		Recibe la tabla de horarios de la pagina y devuelve cierto si hay transbordo.
 
-  def get_trs(self, table):
-    trs = table.tr.td.find_all('tr') # devuelve un tr con muchos trs dentro
-    return trs
+		soup_table: La tabla como clase BeautifulSoup
+		"""
+		return len(soup_table.find_all('tr')[1].find_all()) > 5
 
-  def get_tds(self, tr):
-    tds = tr.find_all('td')
-    return tds
+	def __parse_transbordo(self, soup_table):
+		for tr in soup_table.find_all('tr')[4:-1]:
+			tds = tr.find_all('td')
+			print 'linea1: ' + tds[0].string # linea 1
+			print 'horig1: ' + tds[1].string # ho 1
+			print 'hdest1: ' + tds[2].string # hd 1
+			print 'linea2: ' + tds[3].string # linea 2
+			print 'horig2: ' + tds[4].string # ho 2
+			print 'hdest2: ' + tds[5].string # hd 2
+			print 'time  : ' + tds[6].string # time
+			print ''
 
-  def hay_transbordo(self, list):
-    return len(list[0]) > 5
 
-  def parse_table(self, table):
-    list = []
-    trs = self.get_trs(table)
-    for tr in trs:
-      tds = self.get_tds(tr)
-      obj = []
-      for td in tds:
-        td = td.string
-        if td:
-          td = td.strip()
-        obj.append(td)
-      list.append(obj)
-    return list
-
-  def parse_table_normal(self, list):
-    list.pop(0)
-    l = []
-    for row in list:
-      t = Trayecto(str(row[0]), str(row[1]), str(row[2]), str(row[3]))
-      l.append(t)
-    return l
-
-  def parse_table_transbordo(self, list):
-    parada_transbordo = Estacion.get_estacion_by_nombre(list[1][0])
-    # Borramos las entradasa que no interesan
-    list.pop(0)
-    list.pop(0)
-    list.pop(0)
-    lista = []
-    # para cada fila, miramos si es un transbordo, sino, ponemos el trayecto
-    for row in list:
-      # si es transbordo
-      if row[0] == u'' and row[1] == u'' and row[2] == u'':
-        print('in')
-        transbordo = Transbordo(parada_transbordo, row[3], row[5])
-        lista[-1].anadir_transbordo(transbordo)
-      else:
-        transbordo = Transbordo(parada_transbordo, row[2], row[3])
-        trayecto = Trayecto(str(row[0]), str(row[1]), str(row[5]), str(row[6])) # TODO quitar el tiempo de los trayectos (depende de transbordo, also)
-        trayecto.anadir_transbordo(transbordo)
-        lista.append(trayecto)
-      print(row)
-      print([x.to_dict() for x in lista])
-      print('')
-      print('')
-    return lista
-  
-  def parse_page(self, html):
-    html = BeautifulSoup(html)
-    table = BeautifulSoup(str(html.table))
-    list = []
-    list = self.parse_table(table)
-    if self.hay_transbordo(list):
-      list = self.parse_table_transbordo(list)
-    else:
-      list = self.parse_table_normal(list)
-    return list
-
-  def get_horario(self):
-    nucleo = self.origen.nucleo
-    oelcun = self.destino.nucleo
-    if nucleo == oelcun:
-      page = self.get_page()
-      return self.parse_page(page)
-
-  def to_dict(self):
-    return {
-        'origen': self.origen.to_dict(),
-        'destino': self.destino.to_dict(),
-        'horarios': [l.to_dict() for l in self.table]
-        }
+	def __parse_no_transbordo(self, soup_table):
+		for tr in soup_table.find_all('tr')[1:-1]:
+			tds = tr.find_all('td')[:-1]
+			print 'linea: ' + tds[0].string # linea
+			print 'horig: ' + tds[1].string # ho
+			print 'hdest: ' + tds[2].string # hd
+			print 'time : ' + tds[3].string # time
+			print ''
