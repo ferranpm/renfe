@@ -1,4 +1,3 @@
-import json
 import os
 import sqlite3
 import time
@@ -95,12 +94,22 @@ class Estacion:
 		return l
 
 class Horario(object):
-	def __init__(self, origen, destino, ho=00, hd=26):
+	def __init__(self, origen, destino, ho=00, hd=26, date=time.strftime('%Y%m%d')):
+		"""
+		Genera la clase horario con el horario entre las *Estaciones* *origen* y *destino*
+		entre las horas *ho* y *hd* en la fecha *date*.
+
+		origen: Estacion de origen
+		destino: Estacion de destino
+		ho: hora de origen (00-26)
+		ho: hora de destino (00-26) (> ho)
+		date: fecha en formato yyyymmdd
+		"""
 		self.origen = origen
 		self.destino = destino
 		self.ho = ho
 		self.hd = hd
-		self.date = 20131006
+		self.date = date
 
 		page = self.__get_page()
 		soup = BeautifulSoup(page)
