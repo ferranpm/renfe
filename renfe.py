@@ -114,8 +114,16 @@ class Horario(object):
 		page = self.__get_page()
 		soup = BeautifulSoup(page)
 		table = self.__get_table(soup)
-		if self.__es_transbordo(table): self.__parse_transbordo(table)
-		else: self.__parse_no_transbordo(table)
+
+		self.__set_es_transbordo(table)
+
+		if self.es_transbordo():
+			self.__parse_transbordo(table)
+		else:
+			self.__parse_no_transbordo(table)
+
+	def es_transbordo(self):
+		return self.transbordo
 
 	def __get_page(self):
 		"""
@@ -145,32 +153,31 @@ class Horario(object):
 		"""
 		return soup_page.find_all('table')[0]
 		
-	def __es_transbordo(self, soup_table):
+	def __set_es_transbordo(self, soup_table):
 		"""
 		Recibe la tabla de horarios de la pagina y devuelve cierto si hay transbordo.
 
 		soup_table: La tabla como clase BeautifulSoup
 		"""
-		return len(soup_table.find_all('tr')[1].find_all()) > 5
+		self.transbordo = len(soup_table.find_all('tr')[1].find_all()) > 5
 
 	def __parse_transbordo(self, soup_table):
-		for tr in soup_table.find_all('tr')[4:-1]:
+		for tr in soup_table.find_all('tr')[4:]:
 			tds = tr.find_all('td')
-			print 'linea1: ' + tds[0].string # linea 1
-			print 'horig1: ' + tds[1].string # ho 1
-			print 'hdest1: ' + tds[2].string # hd 1
-			print 'linea2: ' + tds[3].string # linea 2
-			print 'horig2: ' + tds[4].string # ho 2
-			print 'hdest2: ' + tds[5].string # hd 2
-			print 'time  : ' + tds[6].string # time
-			print ''
-
+			print('linea1: ' + tds[0].string) # linea 1
+			print('horig1: ' + tds[1].string) # ho 1
+			print('hdest1: ' + tds[2].string) # hd 1
+			print('linea2: ' + tds[4].string) # linea 2
+			print('horig2: ' + tds[3].string) # ho 2
+			print('hdest2: ' + tds[5].string) # hd 2
+			print('time  : ' + tds[6].string) # time
+			print('')
 
 	def __parse_no_transbordo(self, soup_table):
-		for tr in soup_table.find_all('tr')[1:-1]:
+		for tr in soup_table.find_all('tr')[1:]:
 			tds = tr.find_all('td')[:-1]
-			print 'linea: ' + tds[0].string # linea
-			print 'horig: ' + tds[1].string # ho
-			print 'hdest: ' + tds[2].string # hd
-			print 'time : ' + tds[3].string # time
-			print ''
+			print('linea: ' + tds[0].string) # linea
+			print('horig: ' + tds[1].string) # ho
+			print('hdest: ' + tds[2].string) # hd
+			print('time : ' + tds[3].string) # time
+			print('')
