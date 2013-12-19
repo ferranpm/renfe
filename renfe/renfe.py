@@ -25,7 +25,7 @@ class Nucleo:
             SELECT nombre
             FROM nucleos
             WHERE id=%s;
-            """ % str(self.nucleo_id))
+            """ % str(nucleo_id))
         nombre = cursor.fetchone()
         connection.close()
         return Nucleo(nucleo_id, nombre)
