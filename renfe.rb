@@ -16,6 +16,10 @@ class Referentiable
             :nombre => @nombre
         }
     end
+
+    def to_s
+        "#{id}: #{nombre}"
+    end
 end
 
 class Nucleo < Referentiable
@@ -126,6 +130,18 @@ class Horario
         else
             parse_sin_transbordo table
         end
+    end
+
+    def to_s
+        str = ""
+        @horas.each do |h|
+            if @transbordo
+                str << "Linea1: #{h.linea1} Horig1: #{h.ho1} Hdest1: #{h.hd1} Linea2: #{h.linea2} Horig2: #{h.ho2} Hdest2: #{h.hd2}\n"
+            else
+                str << "Linea: #{h.linea} Horig: #{h.ho} Hdest: #{h.hd}\n"
+            end
+        end
+        str
     end
 
     private :get_page, :parse_sin_transbordo, :parse_con_transbordo, :parse_page
