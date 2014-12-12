@@ -87,10 +87,10 @@ class Horario
     def parse_sin_transbordo table
         table.xpath('//tr')[2..-1].each do |tr|
             td_list = tr.xpath('td').children
-            linea = td_list[0] # linea
-            horig = td_list[1] # hd
-            hdest = td_list[2] # ho
-            time  = td_list[3] # time
+            linea = td_list[0].text.strip # linea
+            horig = td_list[1].text.strip # hd
+            hdest = td_list[2].text.strip # ho
+            time  = td_list[3].text.strip # time
             @horas << ItinerarioSimple.new(linea, horig, hdest)
         end
     end
@@ -101,18 +101,18 @@ class Horario
             td_list = tr.xpath('td').children
             linea1, horig1, hdest1 = nil
             if td_list[0].text.strip == "" and prev
-                linea1 = prev[0].text
-                horig1 = prev[1].text
-                hdest1 = prev[2].text
+                linea1 = prev[0].text.strip
+                horig1 = prev[1].text.strip
+                hdest1 = prev[2].text.strip
             else
-                linea1 = td_list[0].text
-                horig1 = td_list[1].text
-                hdest1 = td_list[2].text
+                linea1 = td_list[0].text.strip
+                horig1 = td_list[1].text.strip
+                hdest1 = td_list[2].text.strip
             end
-            linea2 = td_list[4].text
-            horig2 = td_list[3].text
-            hdest2 = td_list[5].text
-            time = td_list[6].text
+            linea2 = td_list[4].text.strip
+            horig2 = td_list[3].text.strip
+            hdest2 = td_list[5].text.strip
+            time = td_list[6].text.strip
             @horas << ItinerarioDoble.new(linea1, horig1, hdest1, linea2, horig2, hdest2)
             prev = td_list if not prev
         end
