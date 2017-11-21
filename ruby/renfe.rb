@@ -80,7 +80,7 @@ class ItinerarioSimple
 end
 
 class ItinerarioDoble
-  attr_accessor_initialize :linea_1, :linea_2, :hora_origen_1, :hora_destino_1, :hora_origen_2, :hora_destino_2
+  attr_accessor_initialize :linea_1, :hora_origen_1, :hora_destino_1, :linea_2, :hora_origen_2, :hora_destino_2
 end
 
 class Horario
@@ -116,35 +116,34 @@ class Horario
 
   def parse_sin_transbordo
     table.css('tr')[1..-1].map do |tr|
-      td_list = tr.css('td')
-      linea = td_list[0].text.strip
-      hora_origen = td_list[2].text.strip
-      hora_destino = td_list[3].text.strip
-      time = td_list[4].text.strip
+      row = tr.css('td').map(&:text).map(&:strip)
+      linea = row[0]
+      hora_origen = row[2]
+      hora_destino = row[3]
+      time = row[4]
       ItinerarioSimple.new(linea, hora_origen, hora_destino)
     end
   end
 
   def parse_con_transbordo
     prev = nil
-    table.xpath('//tr')[4..-1].map do |tr|
-      td_list = tr.xpath('td').children
-      linea1, hora_origen_1, hora_destino_1 = nil
-      if td_list[0].text.strip == "" and prev
-        linea1 = prev[0].text.strip
-        hora_origen_1 = prev[1].text.strip
-        hora_destino_1 = prev[2].text.strip
+    table.css('tr')[4..-1].map do |tr|
+      row = tr.css('td').map(&:text).map(&:strip)
+      if row[0].empty? && prev
+        linea_1 = prev[0]
+        hora_origen_1 = prev[2]
+        hora_destino_1 = prev[3]
       else
-        linea1 = td_list[0].text.strip
-        hora_origen_1 = td_list[1].text.strip
-        hora_destino_1 = td_list[2].text.strip
+        linea_1 = row[0]
+        hora_origen_1 = row[2]
+        hora_destino_1 = row[3]
       end
-      linea2 = td_list[4].text.strip
-      hora_origen_2 = td_list[3].text.strip
-      hora_destino_2 = td_list[5].text.strip
-      time = td_list[6].text.strip
-      prev = td_list unless prev
-      ItinerarioDoble.new(linea1, hora_origen_1, hora_destino_1, linea2, hora_origen_2, hora_destino_2)
+      linea_2 = row[5]
+      hora_origen_2 = row[4]
+      hora_destino_2 = row[7]
+      time = row[8]
+      prev = row
+      ItinerarioDoble.new(linea_1, hora_origen_1, hora_destino_1, linea_2, hora_origen_2, hora_destino_2)
     end
   end
 
@@ -157,7 +156,7 @@ class Horario
   end
 
   def transbordo
-    table.css('tr')[1].children.size > 11
+    table.css('tr')[0].css('td').size > 5
   end
 
   def table
