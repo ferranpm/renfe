@@ -4,6 +4,14 @@ require 'net/http'
 require 'singleton'
 require 'attr_extras'
 
+Object.class_eval do
+  unless method_defined?(:presence)
+    define_method(:presence) do
+      nil? || empty? ? nil : self
+    end
+  end
+end
+
 class Database
   include Singleton
 
@@ -120,7 +128,6 @@ class Horario
       linea = row[0]
       hora_origen = row[2]
       hora_destino = row[3]
-      time = row[4]
       ItinerarioSimple.new(linea, hora_origen, hora_destino)
     end
   end
@@ -129,19 +136,12 @@ class Horario
     prev = nil
     table.css('tr')[4..-1].map do |tr|
       row = tr.css('td').map(&:text).map(&:strip)
-      if row[0].empty? && prev
-        linea_1 = prev[0]
-        hora_origen_1 = prev[2]
-        hora_destino_1 = prev[3]
-      else
-        linea_1 = row[0]
-        hora_origen_1 = row[2]
-        hora_destino_1 = row[3]
-      end
-      linea_2 = row[5]
-      hora_origen_2 = row[4]
-      hora_destino_2 = row[7]
-      time = row[8]
+      linea_1        = row[0].presence || prev && prev[0]
+      hora_origen_1  = row[2].presence || prev && prev[2]
+      hora_destino_1 = row[3].presence || prev && prev[3]
+      linea_2        = row[5].presence || prev && prev[5]
+      hora_origen_2  = row[4].presence || prev && prev[4]
+      hora_destino_2 = row[7].presence || prev && prev[7]
       prev = row
       ItinerarioDoble.new(linea_1, hora_origen_1, hora_destino_1, linea_2, hora_origen_2, hora_destino_2)
     end
