@@ -1,4 +1,4 @@
-require_relative './renfe.rb'
+require_relative './lib/renfe.rb'
 
 badalona = Estacion.find 79404
 vilafranca = Estacion.find 72204
