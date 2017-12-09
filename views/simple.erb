@@ -1,0 +1,21 @@
+<h2><%= horario.origen.nucleo.nombre %></h2>
+<h3><%= horario.origen.nombre %> - <%= horario.destino.nombre %></h3>
+<h4><%= horario.date %></h4>
+<table class="bordered centered striped">
+  <thead>
+    <tr>
+      <th>Linea</th>
+      <th>Salida</th>
+      <th>Llegada</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% horario.horas.each do |line| %>
+      <tr>
+        <td><%= line.linea %></td>
+        <td><%= line.hora_origen %></td>
+        <td><%= line.hora_destino %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

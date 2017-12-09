@@ -1,0 +1,21 @@
+<form action="/horario" method="get">
+  <div class="row">
+    <div class="input-field col s12 m4">
+      <label for="origen">Origen</label>
+      <input type="text" list="estaciones" name="origen" />
+    </div>
+    <div class="input-field col s12 m4">
+      <label for="destino">Destino</label>
+      <input type="text" list="estaciones" name="destino" />
+    </div>
+    <div class="input-field col s12 m4">
+      <input type="submit" class="btn waves-effect waves-light" />
+    </div>
+  </div>
+</form>
+
+<datalist id="estaciones">
+  <% nucleo.estaciones.each do |estacion| %>
+    <option value="<%= estacion.id %>"><%= estacion.nombre %></option>
+  <% end %>
+</datalist>

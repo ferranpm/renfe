@@ -2,10 +2,29 @@ GEM
   remote: https://rubygems.org/
   specs:
     attr_extras (5.2.0)
+    backports (3.10.3)
     mini_portile2 (2.3.0)
+    multi_json (1.12.2)
+    mustermann (1.0.1)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
+    rack (2.0.3)
+    rack-protection (2.0.0)
+      rack
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.0.0)
+      backports (>= 2.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.0.0)
+      sinatra (= 2.0.0)
+      tilt (>= 1.3, < 3)
     sqlite3 (1.3.13)
+    tilt (2.0.8)
 
 PLATFORMS
   ruby
@@ -13,10 +32,12 @@ PLATFORMS
 DEPENDENCIES
   attr_extras (~> 5.2)
   nokogiri (~> 1.8)
+  sinatra (~> 2.0)
+  sinatra-contrib (~> 2.0)
   sqlite3 (~> 1.3)
 
 RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.15.3
+   1.16.0

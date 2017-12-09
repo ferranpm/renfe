@@ -1,0 +1,9 @@
+<ul class="collection">
+  <% nucleos.each do |nucleo| %>
+    <li class="collection-item">
+      <a href="/estaciones/<%= nucleo.id %>">
+        <%= nucleo.nombre %>
+      </a>
+    </li>
+  <% end %>
+</ul>
