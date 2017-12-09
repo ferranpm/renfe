@@ -16,7 +16,11 @@ class Database
   include Singleton
 
   def connection
-    @connection ||= SQLite3::Database.new('database')
+    @connection ||= SQLite3::Database.new(database_path)
+  end
+
+  def database_path
+    @database_path ||= File.join(File.dirname(__FILE__), 'database')
   end
 end
 
