@@ -6,7 +6,7 @@ premia = Estacion.find 79409
 
 def print_horario(horario)
   puts horario.horas.size
-  if horario.transbordo
+  if horario.transbordo?
     horario.horas.each do |line|
       puts "linea_1: #{line.linea_1}\tlinea_2: #{line.linea_2}\thora_origen_1: #{line.hora_origen_1}\thora_destino_1: #{line.hora_destino_1}\thora_origen_2: #{line.hora_origen_2}\thora_destino_2: #{line.hora_destino_2}"
     end

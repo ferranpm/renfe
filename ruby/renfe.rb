@@ -148,14 +148,14 @@ class Horario
   end
 
   def parse_page
-    if transbordo
+    if transbordo?
       parse_con_transbordo
     else
       parse_sin_transbordo
     end
   end
 
-  def transbordo
+  def transbordo?
     table.css('tr')[0].css('td').size > 5
   end
 
