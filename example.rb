@@ -8,11 +8,11 @@ def print_horario(horario)
   puts horario.horas.size
   if horario.transbordo?
     horario.horas.each do |line|
-      puts "linea_1: #{line.linea_1}\tlinea_2: #{line.linea_2}\thora_origen_1: #{line.hora_origen_1}\thora_destino_1: #{line.hora_destino_1}\thora_origen_2: #{line.hora_origen_2}\thora_destino_2: #{line.hora_destino_2}"
+      puts "linea_1: #{line.linea_1}\tlinea_2: #{line.linea_2}\thora_inicio_1: #{line.hora_inicio_1}\thora_fin_1: #{line.hora_fin_1}\thora_inicio_2: #{line.hora_inicio_2}\thora_fin_2: #{line.hora_fin_2}"
     end
   else
     horario.horas.each do |line|
-      puts "linea: #{line.linea}\thora_origen: #{line.hora_origen}\thora_destino: #{line.hora_destino}"
+      puts "linea: #{line.linea}\thora_inicio: #{line.hora_inicio}\thora_fin: #{line.hora_fin}"
     end
   end
 end

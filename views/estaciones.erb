@@ -1,15 +1,31 @@
 <h2><%= nucleo.nombre %></h2>
 <form action="/horario" method="get">
   <div class="row">
-    <div class="input-field col s12 m4">
-      <label for="origen">Origen</label>
+    <div class="input-field col s12 m6">
+      <label>Origen</label>
       <input type="text" list="estaciones" name="origen" />
     </div>
-    <div class="input-field col s12 m4">
-      <label for="destino">Destino</label>
+    <div class="input-field col s12 m6">
+      <label>Destino</label>
       <input type="text" list="estaciones" name="destino" />
     </div>
-    <div class="input-field col s12 m4">
+  </div>
+  <div class="row">
+    <div class="input-field col s12 m6">
+      <label>Date</label>
+      <input type="text" class="datepicker" name="date" value="<%= Date.today %>">
+    </div>
+    <div class="input-field col s12 m3">
+      <label>Desde</label>
+      <input type="text" class="timepicker" name="from" value="0:00">
+    </div>
+    <div class="input-field col s12 m3">
+      <label>Hasta</label>
+      <input type="text" class="timepicker" name="to" value="23:59">
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12">
       <input type="submit" class="btn waves-effect waves-light" />
     </div>
   </div>
@@ -20,3 +36,26 @@
     <option value="<%= estacion.id %>"><%= estacion.nombre %></option>
   <% end %>
 </datalist>
+
+<script>
+  $('.datepicker').pickadate({
+    selectMonths: false,
+    selectYears: false,
+    today: 'Today',
+    clear: false,
+    close: false,
+    closeOnSelect: true
+  });
+
+  $('.timepicker').pickatime({
+    default: 'now',
+    fromnow: 0,
+    twelvehour: false,
+    donetext: 'OK',
+    cleartext: 'Clear',
+    canceltext: 'Cancel',
+    autoclose: false,
+    ampmclickable: true,
+    aftershow: function(){}
+  });
+</script>

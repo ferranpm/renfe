@@ -16,11 +16,11 @@
     <% horario.horas.each do |line| %>
       <tr>
         <td><%= line.linea_1 %></td>
-        <td><%= line.hora_origen_1 %></td>
-        <td><%= line.hora_destino_1 %></td>
+        <td><%= line.hora_inicio_1 %></td>
+        <td><%= line.hora_fin_1 %></td>
         <td><%= line.linea_2 %></td>
-        <td><%= line.hora_origen_2 %></td>
-        <td><%= line.hora_destino_2 %></td>
+        <td><%= line.hora_inicio_2 %></td>
+        <td><%= line.hora_fin_2 %></td>
       </tr>
     <% end %>
   </tbody>
