@@ -6,7 +6,7 @@ if development?
 end
 
 get '/nucleos' do
-  erb :nucleos, locals: { nucleos: Nucleo.all }
+  erb :nucleos, locals: { nucleos: Nucleo.all.sort_by(&:nombre) }
 end
 
 get '/estaciones/:id' do |id|

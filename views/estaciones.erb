@@ -32,7 +32,7 @@
 </form>
 
 <datalist id="estaciones">
-  <% nucleo.estaciones.each do |estacion| %>
+  <% nucleo.estaciones.sort_by(&:nombre).each do |estacion| %>
     <option value="<%= estacion.id %>"><%= estacion.nombre %></option>
   <% end %>
 </datalist>
