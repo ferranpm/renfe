@@ -5,6 +5,10 @@ if development?
   require 'sinatra/reloader'
 end
 
+get '/' do
+  erb :index
+end
+
 get '/nucleos' do
   erb :nucleos, locals: { nucleos: Nucleo.all.sort_by(&:nombre) }
 end
