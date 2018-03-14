@@ -1,13 +1,15 @@
 <h2><%= nucleo.nombre %></h2>
-<form action="/horario" method="get">
+<form action="/horario" method="get" onsubmit="checkForm()">
   <div class="row">
     <div class="input-field col s12 m6">
       <label>Origen</label>
-      <input type="text" list="estaciones" name="origen" />
+      <input type="text" list="estaciones" id="origen" />
+      <input hidden type="text" list="estaciones" name="origen" />
     </div>
     <div class="input-field col s12 m6">
       <label>Destino</label>
-      <input type="text" list="estaciones" name="destino" />
+      <input type="text" list="estaciones" id="destino" />
+      <input hidden type="text" list="estaciones" name="destino" />
     </div>
   </div>
   <div class="row">
@@ -33,7 +35,7 @@
 
 <datalist id="estaciones">
   <% nucleo.estaciones.sort_by(&:nombre).each do |estacion| %>
-    <option value="<%= estacion.id %>"><%= estacion.nombre %></option>
+    <option data-value="<%= estacion.id %>"><%= estacion.nombre %></option>
   <% end %>
 </datalist>
 
@@ -58,4 +60,24 @@
     ampmclickable: true,
     aftershow: function(){}
   });
+
+  function findOption(name) {
+    return Array.from(document.querySelectorAll('#estaciones option')).find(function(option) {
+      return option.value === name;
+    });
+  }
+
+  function findId(name) {
+    var option = findOption(name);
+    return option && option.getAttribute('data-value');
+  }
+
+  function checkForm() {
+    var origen = findId(document.getElementById('origen').value);
+    var destino = findId(document.getElementById('destino').value);
+    if (!origen || !destino) return false;
+    document.querySelector('input[name="origen"]').value = origen;
+    document.querySelector('input[name="destino"]').value = destino;
+    return true;
+  }
 </script>
