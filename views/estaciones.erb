@@ -1,14 +1,14 @@
 <h2><%= nucleo.nombre %></h2>
-<form action="/horario" method="get" onsubmit="checkForm()">
+<form action="/horario" method="get" onsubmit="return checkForm()">
   <div class="row">
     <div class="input-field col s12 m6">
       <label>Origen</label>
-      <input type="text" list="estaciones" id="origen" />
+      <input type="text" list="estaciones" id="origen" class="validate" required />
       <input hidden type="text" list="estaciones" name="origen" />
     </div>
     <div class="input-field col s12 m6">
       <label>Destino</label>
-      <input type="text" list="estaciones" id="destino" />
+      <input type="text" list="estaciones" id="destino" class="validate" required />
       <input hidden type="text" list="estaciones" name="destino" />
     </div>
   </div>
