@@ -1,9 +1,7 @@
 require 'sinatra'
 require_relative './lib/renfe.rb'
 
-if development?
-  require 'sinatra/reloader'
-end
+require 'sinatra/reloader' if development?
 
 get '/' do
   erb :index
@@ -20,10 +18,16 @@ end
 get '/horario' do
   origen = Estacion.find(params[:origen].to_i)
   destino = Estacion.find(params[:destino].to_i)
-  date = Date.parse(params[:date])
-  from = params[:from].split(':').first.to_i
-  to = params[:to].split(':').first.to_i
-  horario = Horario.new(origen, destino, date: date, hora_inicio: from, hora_fin: to)
+  date = 
+  all_day = ["1", "on", 1, true, "true"].include?(params[:all_day])
+  options = {
+    date: Date.parse(params[:date])
+  }.tap do |options|
+    break if all_day
+    options[:hora_inicio] = params[:from].split(':').first.to_i
+    options[:hora_fin] = params[:to].split(':').first.to_i
+  end
+  horario = Horario.new(origen, destino, options)
   template = horario.transbordo? ? :transbordo : :simple
   erb template, locals: { horario: horario }
 end

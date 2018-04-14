@@ -15,15 +15,21 @@
   <div class="row">
     <div class="input-field col s12 m6">
       <label>Date</label>
-      <input type="text" class="datepicker" name="date" value="<%= Date.today %>">
+      <input type="text" class="datepicker" name="date" value="<%= Date.today %>" />
     </div>
-    <div class="input-field col s12 m3">
+    <div class="col s12 m6">
+      <input id="all_day" type="checkbox" name="all_day" onchange="allDayChanged(this.checked)" checked />
+      <label for="all_day">Todo el día</label>
+    </div>
+  </div>
+  <div class="row">
+    <div class="input-field col s12 m6">
       <label>Desde</label>
-      <input type="text" class="timepicker" name="from" value="0:00">
+      <input type="text" class="timepicker" id="from" name="from" value="0:00" disabled />
     </div>
-    <div class="input-field col s12 m3">
+    <div class="input-field col s12 m6">
       <label>Hasta</label>
-      <input type="text" class="timepicker" name="to" value="23:59">
+      <input type="text" class="timepicker" id="to" name="to" value="23:59" disabled />
     </div>
   </div>
   <div class="row">
@@ -60,6 +66,17 @@
     ampmclickable: true,
     aftershow: function(){}
   });
+
+  function allDayChanged(checked) {
+    var elements = [
+      document.getElementById('from'),
+      document.getElementById('to')
+    ];
+    elements.forEach(function(element) {
+      if (checked) element.setAttribute('disabled', '');
+      else element.removeAttribute('disabled');
+    })
+  }
 
   function findOption(name) {
     return Array.from(document.querySelectorAll('#estaciones option')).find(function(option) {
