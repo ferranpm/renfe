@@ -1,7 +1,6 @@
 require 'nokogiri'
 require 'sqlite3'
 require 'net/http'
-require 'singleton'
 require 'attr_extras'
 
 Object.class_eval do
@@ -13,14 +12,12 @@ Object.class_eval do
 end
 
 class Database
-  include Singleton
-
-  def connection
-    @connection ||= SQLite3::Database.new(database_path)
+  def self.connection
+    @@connection ||= SQLite3::Database.new(database_path)
   end
 
-  def database_path
-    @database_path ||= File.join(File.dirname(__FILE__), 'database')
+  def self.database_path
+    @@database_path ||= File.join(File.dirname(__FILE__), 'database')
   end
 end
 
@@ -29,7 +26,7 @@ class Referentiable
 
   def self.find(id)
     sql = "select nombre from #{table} where id=#{id}"
-    row = Database.instance.connection.get_first_row(sql)
+    row = Database.connection.get_first_row(sql)
     new(id, row[0])
   end
 end
@@ -41,7 +38,7 @@ class Nucleo < Referentiable
 
   def self.all
     sql = "select id, nombre from nucleos"
-    Database.instance.connection.execute(sql).map do |row|
+    Database.connection.execute(sql).map do |row|
       Nucleo.new(row[0], row[1])
     end
   end
@@ -52,7 +49,7 @@ class Nucleo < Referentiable
     from estaciones
     where nucleo_id=#{id}
     SQL
-    Database.instance.connection.execute(sql).map do |row|
+    Database.connection.execute(sql).map do |row|
       Estacion.new(row[0], row[1])
     end
   end
@@ -70,7 +67,7 @@ class Estacion < Referentiable
       where estaciones.id=#{id}
       and estaciones.nucleo_id=nucleos.id
     SQL
-    row = Database.instance.connection.get_first_row(sql)
+    row = Database.connection.get_first_row(sql)
     Nucleo.new(row[0], row[1])
   end
 
@@ -81,7 +78,7 @@ class Estacion < Referentiable
       where nucleo_id=#{nucleo.id}
       order by nombre asc
     SQL
-    Database.instance.connection.execute(sql).map do |row|
+    Database.connection.execute(sql).map do |row|
       Estacion.new(row[0], row[1])
     end
   end
