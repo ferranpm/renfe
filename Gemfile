@@ -7,11 +7,11 @@ gem "capistrano", "~> 3.10"
 gem "capistrano-bundler", "~> 1.3"
 gem "nokogiri", "~> 1.8"
 gem "puma", "~> 3.11"
-gem "sinatra", "~> 2.0"
+gem "sinatra", ">= 2.0.2"
 gem "sqlite3", "~> 1.3"
 
 group :development do
-  gem "sinatra-contrib", "~> 2.0"
+  gem "sinatra-contrib", ">= 2.0.2"
 end
 
 # Added at 2018-02-03 02:37:10 +0100 by ferran:
