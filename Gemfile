@@ -6,7 +6,7 @@ gem "attr_extras", "~> 5.2"
 gem "capistrano", "~> 3.10"
 gem "capistrano-bundler", "~> 1.3"
 gem "nokogiri", "~> 1.10"
-gem "puma", "~> 3.12"
+gem "puma", "~> 4.3"
 gem "sinatra", ">= 2.0.2"
 gem "sqlite3", "~> 1.3"
 
