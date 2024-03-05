@@ -55,16 +55,6 @@ module Renfe
     end
   end
 
-  class Estacion
-    def initialize(nucleo, id, nombre)
-      @nucleo = nucleo
-      @id = id
-      @nombre = nombre
-    end
-
-    attr_reader :nucleo, :id, :nombre
-  end
-
   class Horario
     def initialize(origen, destino, hora_inicio: 0, hora_fin: 26, date: Date.today)
       @origen = origen
@@ -156,26 +146,7 @@ module Renfe
     end
   end
 
-  class ItinerarioSimple
-    def initialize(linea, hora_inicio, hora_fin)
-      @linea = linea
-      @hora_inicio = hora_inicio
-      @hora_fin = hora_fin
-    end
-
-    attr_reader :linea, :hora_inicio, :hora_fin
-  end
-
-  class ItinerarioDoble
-    def initialize(linea_1, hora_inicio_1, hora_fin_1, linea_2, hora_inicio_2, hora_fin_2)
-      @linea_1 = linea_1
-      @hora_inicio_1 = hora_inicio_1
-      @hora_fin_1 = hora_fin_1
-      @linea_2 = linea_2
-      @hora_inicio_2 = hora_inicio_2
-      @hora_fin_2 = hora_fin_2
-    end
-
-    attr_reader :linea_1, :hora_inicio_1, :hora_fin_1, :linea_2, :hora_inicio_2, :hora_fin_2
-  end
+  Estacion = Struct.new(:nucleo, :id, :nombre)
+  ItinerarioSimple = Struct.new(:linea, :hora_inicio, :hora_fin)
+  ItinerarioDoble = Struct.new(:linea_1, :hora_inicio_1, :hora_fin_1, :linea_2, :hora_inicio_2, :hora_fin_2)
 end
