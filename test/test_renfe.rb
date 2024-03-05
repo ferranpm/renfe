@@ -3,13 +3,13 @@
 require "test_helper"
 require "renfe"
 
-module Renfe
-  describe Renfe do
-    it "has a version number" do
-      refute_nil ::Renfe::VERSION
-    end
+describe Renfe do
+  it "has a version number" do
+    refute_nil Renfe::VERSION
   end
+end
 
+module Renfe
   describe Horario do
     it "creates a simple route" do
       barcelona = Nucleo.all.find { |n| n.nombre.match?(/barcelona/i) }
