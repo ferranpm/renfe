@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-ruby "2.7.5"
+ruby "3.0.4"
 
 gem "attr_extras", "~> 5.2"
 gem "capistrano", "~> 3.10"
