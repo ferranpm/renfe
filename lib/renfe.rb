@@ -1,7 +1,6 @@
 require 'nokogiri'
 require 'sqlite3'
 require 'open-uri'
-require 'attr_extras'
 
 Object.class_eval do
   unless method_defined?(:presence)
@@ -22,7 +21,12 @@ class Database
 end
 
 class Referentiable
-  attr_reader_initialize :id, :nombre
+  def initialize(id, nombre)
+    @id = id
+    @nombre = nombre
+  end
+
+  attr_reader :id, :nombre
 
   def self.find(id)
     sql = "select nombre from #{table} where id=#{id}"
@@ -85,15 +89,38 @@ class Estacion < Referentiable
 end
 
 class ItinerarioSimple
-  attr_accessor_initialize :linea, :hora_inicio, :hora_fin
+  def initialize(linea, hora_inicio, hora_fin)
+    @linea = linea
+    @hora_inicio = hora_inicio
+    @hora_fin = hora_fin
+  end
+
+  attr_reader :linea, :hora_inicio, :hora_fin
 end
 
 class ItinerarioDoble
-  attr_accessor_initialize :linea_1, :hora_inicio_1, :hora_fin_1, :linea_2, :hora_inicio_2, :hora_fin_2
+  def initialize(linea_1, hora_inicio_1, hora_fin_1, linea_2, hora_inicio_2, hora_fin_2)
+    @linea_1 = linea_1
+    @hora_inicio_1 = hora_inicio_1
+    @hora_fin_1 = hora_fin_1
+    @linea_2 = linea_2
+    @hora_inicio_2 = hora_inicio_2
+    @hora_fin_2 = hora_fin_2
+  end
+
+  attr_reader :linea_1, :hora_inicio_1, :hora_fin_1, :linea_2, :hora_inicio_2, :hora_fin_2
 end
 
 class Horario
-  attr_reader_initialize :origen, :destino, [ :hora_inicio, :hora_fin, :date ]
+  def initialize(origen, destino, hora_inicio: 0, hora_fin: 26, date: Date.today)
+    @origen = origen
+    @destino = destino
+    @hora_inicio = hora_inicio
+    @hora_fin = hora_fin
+    @date = date
+  end
+
+  attr_reader :origen, :destino, :hora_inicio, :hora_fin, :date
 
   def horas
     @horas ||= parse_page

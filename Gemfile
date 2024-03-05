@@ -2,7 +2,6 @@ source "https://rubygems.org"
 
 ruby "3.0.4"
 
-gem "attr_extras", "~> 5.2"
 gem "capistrano", "~> 3.10"
 gem "capistrano-bundler", "~> 1.3"
 gem "nokogiri", "~> 1.14"
