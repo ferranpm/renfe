@@ -1,5 +1,4 @@
 require 'nokogiri'
-require 'sqlite3'
 require 'open-uri'
 
 Object.class_eval do
@@ -10,17 +9,7 @@ Object.class_eval do
   end
 end
 
-class Database
-  def self.connection
-    @@connection ||= SQLite3::Database.new(database_path)
-  end
-
-  def self.database_path
-    @@database_path ||= File.join(File.dirname(__FILE__), 'database')
-  end
-end
-
-class Referentiable
+class Nucleo
   def initialize(id, nombre)
     @id = id
     @nombre = nombre
@@ -28,64 +17,56 @@ class Referentiable
 
   attr_reader :id, :nombre
 
-  def self.find(id)
-    sql = "select nombre from #{table} where id=#{id}"
-    row = Database.connection.get_first_row(sql)
-    new(id, row[0])
-  end
-end
-
-class Nucleo < Referentiable
-  def self.table
-    "nucleos"
-  end
+  NUCLEOS = [
+    { id: 10, nombre: "Madrid" },
+    { id: 20, nombre: "Asturias" },
+    { id: 30, nombre: "Sevilla" },
+    { id: 31, nombre: "Cádiz" },
+    { id: 32, nombre: "Málaga" },
+    { id: 40, nombre: "Valencia" },
+    { id: 41, nombre: "Murcia/Alicante" },
+    { id: 50, nombre: "Barcelona" },
+    { id: 60, nombre: "Bilbao" },
+    { id: 61, nombre: "San Sebastián" },
+    { id: 62, nombre: "Santander" },
+    { id: 70, nombre: "Zaragoza" },
+  ]
 
   def self.all
-    sql = "select id, nombre from nucleos"
-    Database.connection.execute(sql).map do |row|
-      Nucleo.new(row[0], row[1])
+    NUCLEOS.map do |nucleo|
+      new(nucleo[:id], nucleo[:nombre])
     end
   end
 
   def estaciones
-    sql = <<-SQL
-    select id, nombre
-    from estaciones
-    where nucleo_id=#{id}
-    SQL
-    Database.connection.execute(sql).map do |row|
-      Estacion.new(row[0], row[1])
+    @estaciones ||= options.map do |option|
+      Estacion.new(self, option["value"], option.text.strip)
     end
+  end
+
+private
+
+  def options
+    page.css("select#o option").select { |x| x["value"].match?(/^\d+$/) }
+  end
+
+  def page
+    Nokogiri::HTML(uri.read)
+  end
+
+  def uri
+    URI.parse("https://horarios.renfe.com/cer/hjcer300.jsp?NUCLEO=#{id}&CP=NO&I=s")
   end
 end
 
-class Estacion < Referentiable
-  def self.table
-    "estaciones"
+class Estacion
+  def initialize(nucleo, id, nombre)
+    @nucleo = nucleo
+    @id = id
+    @nombre = nombre
   end
 
-  def nucleo
-    sql = <<-SQL
-      select nucleos.id, nucleos.nombre
-      from nucleos, estaciones
-      where estaciones.id=#{id}
-      and estaciones.nucleo_id=nucleos.id
-    SQL
-    row = Database.connection.get_first_row(sql)
-    Nucleo.new(row[0], row[1])
-  end
-
-  def self.all(nucleo)
-    sql = <<-SQL
-      select id, nombre
-      from estaciones
-      where nucleo_id=#{nucleo.id}
-      order by nombre asc
-    SQL
-    Database.connection.execute(sql).map do |row|
-      Estacion.new(row[0], row[1])
-    end
-  end
+  attr_reader :nucleo, :id, :nombre
 end
 
 class ItinerarioSimple
