@@ -1,6 +1,6 @@
 require 'nokogiri'
 require 'sqlite3'
-require 'net/http'
+require 'open-uri'
 require 'attr_extras'
 
 Object.class_eval do
@@ -112,11 +112,11 @@ class Horario
   end
 
   def page
-    @page ||= Nokogiri::HTML(Net::HTTP.get(uri))
+    @page ||= Nokogiri::HTML(uri.read)
   end
 
   def uri
-    URI.parse("http://horarios.renfe.com/#{params}")
+    URI.parse("https://horarios.renfe.com/#{params}")
   end
 
   def params
