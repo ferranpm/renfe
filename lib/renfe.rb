@@ -1,13 +1,7 @@
+# frozen_string_literal: true
+
 require 'nokogiri'
 require 'open-uri'
-
-Object.class_eval do
-  unless method_defined?(:presence)
-    define_method(:presence) do
-      nil? || empty? ? nil : self
-    end
-  end
-end
 
 class Nucleo
   def initialize(id, nombre)
@@ -119,42 +113,11 @@ class Horario
     @date ||= Date.today
   end
 
-  def page
-    @page ||= Nokogiri::HTML(uri.read)
+  def itinerarios
+    @itinerarios ||= parse_page
   end
 
-  def uri
-    URI.parse("https://horarios.renfe.com/#{params}")
-  end
-
-  def params
-    "cer/hjcer310.jsp?&f1=&df=#{date.strftime("%Y%m%d")}&TXTInfo=&hd=#{hora_fin}&d=#{destino.id}&i=s&cp=NO&nucleo=#{origen.nucleo.id}&o=#{origen.id}&ho=#{hora_inicio}"
-  end
-
-  def parse_sin_transbordo
-    table.css('tr')[1..-1].map do |tr|
-      row = tr.css('td').map(&:text).map(&:strip)
-      linea = row[0]
-      hora_inicio = row[2]
-      hora_fin = row[3]
-      ItinerarioSimple.new(linea, hora_inicio, hora_fin)
-    end
-  end
-
-  def parse_con_transbordo
-    prev = nil
-    table.css('tr')[4..-1].map do |tr|
-      row = tr.css('td').map(&:text).map(&:strip)
-      linea_1        = row[0].presence || prev && prev[0]
-      hora_inicio_1  = row[2].presence || prev && prev[2]
-      hora_fin_1     = row[3].presence || prev && prev[3]
-      linea_2        = row[5].presence || prev && prev[5]
-      hora_inicio_2  = row[4].presence || prev && prev[4]
-      hora_fin_2     = row[7].presence || prev && prev[7]
-      prev = row
-      ItinerarioDoble.new(linea_1, hora_inicio_1, hora_fin_1, linea_2, hora_inicio_2, hora_fin_2)
-    end
-  end
+private
 
   def parse_page
     if transbordo?
@@ -168,7 +131,48 @@ class Horario
     table.css('tr')[0].css('td').size > 5
   end
 
+  def parse_con_transbordo
+    prev = nil
+    table.css('tr')[4..-1].map do |tr|
+      row = tr.css('td').map(&:text).map(&:strip)
+      linea_1        = presence(row[0]) || prev && prev[0]
+      hora_inicio_1  = presence(row[2]) || prev && prev[2]
+      hora_fin_1     = presence(row[3]) || prev && prev[3]
+      linea_2        = presence(row[5]) || prev && prev[5]
+      hora_inicio_2  = presence(row[4]) || prev && prev[4]
+      hora_fin_2     = presence(row[7]) || prev && prev[7]
+      prev = row
+      ItinerarioDoble.new(linea_1, hora_inicio_1, hora_fin_1, linea_2, hora_inicio_2, hora_fin_2)
+    end
+  end
+
+  def parse_sin_transbordo
+    table.css('tr')[1..-1].map do |tr|
+      row = tr.css('td').map(&:text).map(&:strip)
+      linea = row[0]
+      hora_inicio = row[2]
+      hora_fin = row[3]
+      ItinerarioSimple.new(linea, hora_inicio, hora_fin)
+    end
+  end
+
   def table
     page.css('table')[0]
+  end
+
+  def page
+    Nokogiri::HTML(uri.read)
+  end
+
+  def uri
+    URI.parse("https://horarios.renfe.com/#{params}")
+  end
+
+  def params
+    "cer/hjcer310.jsp?&f1=&df=#{date.strftime("%Y%m%d")}&TXTInfo=&hd=#{hora_fin}&d=#{destino.id}&i=s&cp=NO&nucleo=#{origen.nucleo.id}&o=#{origen.id}&ho=#{hora_inicio}"
+  end
+
+  def presence(item)
+    item.nil? || item.empty? ? nil : item
   end
 end
