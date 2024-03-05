@@ -7,6 +7,7 @@ gem "capistrano", "~> 3.10"
 gem "capistrano-bundler", "~> 1.3"
 gem "nokogiri", "~> 1.14"
 gem "puma", "~> 5.6"
+gem "rubocop", "~> 1.61"
 gem "sinatra", ">= 2.0.2"
 gem "sqlite3", "~> 1.7"
 
